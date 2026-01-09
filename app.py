@@ -1,11 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import datetime, uuid, re
 
 app = Flask(__name__)
 CORS(app)
 
-# Expanded KEYWORDS with regex for better matching
+# 1. Yeh naya route hai jo aapki website ka main page dikhayega
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 KEYWORDS = {
     r"\burgent\b": "Urgency",
     r"\botp\b": "Financial Scam",
@@ -15,9 +19,9 @@ KEYWORDS = {
     r"\btransfer\b": "Financial Scam",
     r"\bprize\b": "Lottery Scam",
     r"\baccount\b": "Phishing",
-    r"\binvest\b": "Investment Scam",  # New
-    r"\bsextortion\b": "Sextortion",  # New
-    r"\bpassword\b": "Phishing"  # New
+    r"\binvest\b": "Investment Scam",
+    r"\bsextortion\b": "Sextortion",
+    r"\bpassword\b": "Phishing"
 }
 
 def analyze(msg):
@@ -25,9 +29,13 @@ def analyze(msg):
     risky = []
     for pattern, category in KEYWORDS.items():
         if re.search(pattern, msg_l):
-            risky.append(pattern.strip(r'\b'))  # Store the word, not regex
-    score = min(100, len(risky) * 20 + 10)  # Adjusted scoring
-    category = KEYWORDS.get(r"\b" + risky[0] + r"\b", "Unknown") if risky else "Unknown"
+            risky.append(pattern.strip(r'\b'))
+    score = min(100, len(risky) * 20 + 10)
+    category = "Unknown"
+    if risky:
+        match_key = r"\b" + risky[0] + r"\b"
+        category = KEYWORDS.get(match_key, "Unknown")
+    
     status = "High Risk" if score > 70 else "Medium Risk" if score > 40 else "Low Risk"
     advice = [
         "Never share OTP, passwords, or banking credentials.",
@@ -44,7 +52,7 @@ def analyze(msg):
         "category": category,
         "target": "General Public",
         "status": status,
-        "explanation": "This message employs psychological manipulation, urgency tactics, and financial lures commonly exploited by cybercriminals to deceive victims into unauthorized actions or data disclosure.",
+        "explanation": "This message employs psychological manipulation, urgency tactics, and financial lures.",
         "advice": advice
     }
 
@@ -60,4 +68,4 @@ def scan():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)  # More accessible
+    app.run(debug=True, host="0.0.0.0", port=10000) # Render ke liye port 10000 behtar hai
