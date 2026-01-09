@@ -22,12 +22,6 @@ Generation of detailed, user-friendly analysis reports
 
 Cyber safety guidance and legal awareness support
 
-System Architecture
-
-Frontend: HTML & CSS (User Interface and Visualization)
-
-Backend: Python (Analysis logic & rule-based AI processing)
-
 Use Cases
 
 Helps individuals identify potential cyber fraud before taking action
