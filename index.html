@@ -522,8 +522,8 @@ function closeModal(type) {
 }
 
 async function signup() {
-  const username = document.getElementById('signupUsername').value;
-  const email = document.getElementById('signupEmail').value;
+  const username = document.getElementById('signupUsername').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
 
   if (!username || !email || !password) {
@@ -531,10 +531,17 @@ async function signup() {
     return;
   }
 
-  // Simple email validation
+  // Username validation: at least 3 characters, alphanumeric and underscores only
+  const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+  if (!usernameRegex.test(username)) {
+    alert('Galat username! Username must be at least 3 characters long and contain only letters, numbers, and underscores.');
+    return;
+  }
+
+  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    alert(' Please enter a valid email address.');
+    alert('Galat email id! Please enter a valid email address.');
     return;
   }
 
